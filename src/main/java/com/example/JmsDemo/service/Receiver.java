@@ -21,7 +21,7 @@ import com.example.JmsDemo.model.Response;
 public class Receiver extends ActiveMQConfig implements SessionAwareMessageListener<Message> {
 
     @Override
-    @JmsListener(destination = ORDER_QUEUE)
+    @JmsListener(destination = REQUEST_QUEUE)
     public void onMessage(Message message, Session session) throws JMSException {
         Request req = (Request) ((ActiveMQObjectMessage) message).getObject();
         

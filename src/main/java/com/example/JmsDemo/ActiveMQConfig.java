@@ -7,7 +7,7 @@ import org.springframework.jms.annotation.EnableJms;
 @Configuration
 public class ActiveMQConfig {
 
-    public static final String ORDER_QUEUE = "order-queue";
-    public static final String ORDER_REPLY_2_QUEUE = "order-reply-2-queue";
+    public static final String REQUEST_QUEUE = "request-queue";
+    public static final String REQUEST_REPLY_2_QUEUE = "request-reply-2-queue";
 
 }

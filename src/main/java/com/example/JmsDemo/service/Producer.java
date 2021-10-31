@@ -41,7 +41,7 @@ public class Producer extends ActiveMQConfig {
 			ObjectMessage objectMessage = session.createObjectMessage(req);
 
 			objectMessage.setJMSCorrelationID(UUID.randomUUID().toString());
-			objectMessage.setJMSReplyTo(new ActiveMQQueue(ORDER_REPLY_2_QUEUE));
+			objectMessage.setJMSReplyTo(new ActiveMQQueue(REQUEST_REPLY_2_QUEUE));
 			objectMessage.setJMSCorrelationID(UUID.randomUUID().toString());
 			objectMessage.setJMSExpiration(1000L);
 			objectMessage.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT.getValue());
@@ -50,7 +50,7 @@ public class Producer extends ActiveMQConfig {
 
 			// this operation seems to be blocking + sync
 			return jmsMessagingTemplate
-					.convertSendAndReceive(new ActiveMQQueue(ORDER_QUEUE), objectMessage,
+					.convertSendAndReceive(new ActiveMQQueue(REQUEST_QUEUE), objectMessage,
 					Response.class); 
 		} catch (Exception e) {
 			System.err.println("Error: " + e);
