@@ -13,16 +13,16 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
-import com.example.JmsDemo.ActiveMQConfig;
 import com.example.JmsDemo.model.Request;
 import com.example.JmsDemo.model.Response;
 
 @Component
-public class Receiver extends ActiveMQConfig implements SessionAwareMessageListener<Message> {
-
+public class Receiver  implements SessionAwareMessageListener<Message> {
+	
     @Override
-    @JmsListener(destination = REQUEST_QUEUE)
+    @JmsListener(destination = "${app.request.q}")
     public void onMessage(Message message, Session session) throws JMSException {
+    	
         Request req = (Request) ((ActiveMQObjectMessage) message).getObject();
         
         Response response = new Response(req.getId(), UUID.randomUUID().toString(), "Request was successful");
