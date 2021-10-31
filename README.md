@@ -20,3 +20,4 @@ A demo application on how to send synchronous and asynchronous messages using AM
     "message": "Request was successful"
 }
 ```
+* Clone master branch to view the source code
