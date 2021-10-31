@@ -17,15 +17,17 @@ import org.springframework.stereotype.Service;
 import com.example.JmsDemo.model.Request;
 import com.example.JmsDemo.model.Response;
 
-
 @Service
 public class Producer {
-	
+
 	@Value("${app.request.q}")
 	private String requestQ;
-	
+
 	@Value("${app.request.reply2q}")
 	private String requestReply2Q;
+
+	@Value("${app.request.async.q}")
+	private String requestAsyncQ;
 
 	@Autowired
 	JmsMessagingTemplate jmsMessagingTemplate;
@@ -33,16 +35,20 @@ public class Producer {
 	@Autowired
 	JmsTemplate jmsTemplate;
 
+	/**
+	 * 
+	 * @param req
+	 * @return
+	 */
 	public Response sendWithReply(Request req) {
-		
+
 		System.out.println("Processing Request " + req);
 		try {
 			jmsTemplate.setReceiveTimeout(1000L);
 			jmsMessagingTemplate.setJmsTemplate(jmsTemplate);
 
-			Session session = jmsMessagingTemplate
-					.getConnectionFactory()
-					.createConnection().createSession(false,Session.AUTO_ACKNOWLEDGE);
+			Session session = jmsMessagingTemplate.getConnectionFactory().createConnection().createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
 
 			ObjectMessage objectMessage = session.createObjectMessage(req);
 
@@ -51,17 +57,26 @@ public class Producer {
 			objectMessage.setJMSCorrelationID(UUID.randomUUID().toString());
 			objectMessage.setJMSExpiration(1000L);
 			objectMessage.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT.getValue());
-			
+
 			System.out.println("Message Sent!  ");
 
 			// this operation seems to be blocking + sync
-			return jmsMessagingTemplate
-					.convertSendAndReceive(new ActiveMQQueue(requestQ), objectMessage,
-					Response.class); 
+			return jmsMessagingTemplate.convertSendAndReceive(new ActiveMQQueue(requestQ), objectMessage,
+					Response.class);
 		} catch (Exception e) {
 			System.err.println("Error: " + e);
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 
+	 * @param req
+	 * @return
+	 */
+	public Response sendWithAck(Request req) {
+		jmsMessagingTemplate.convertAndSend(new ActiveMQQueue(requestAsyncQ), req);  
+		return new Response(req.getId(), req.getId(), "Ack");
 	}
 }

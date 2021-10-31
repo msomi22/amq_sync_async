@@ -19,8 +19,10 @@ public class APIController {
 	private Producer producer;
 
 	@PostMapping(value="/v1", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public Response send(@RequestBody Request order) {
-		System.out.println("Received order " + order);
-	    return producer.sendWithReply(order);
+	public Response send(@RequestBody Request req) {
+		System.out.println("Received order " + req);
+		if(req.getAccount().isEmpty())
+			return producer.sendWithAck(req);
+	    return producer.sendWithReply(req);
 	}
 }
